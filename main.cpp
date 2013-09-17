@@ -66,7 +66,7 @@ public:
 	vec2f getPoint(size_t segment_num,float t)
 	{
 		//number of segments is equal to num. of correction points (one point per segment)
-		if(correction_points.size()>=segment_num)
+		if(correction_points.size()>=segment_num && base_points.size()>=2)
 		{
 			// pivot points
 			vec2f P[] = {
@@ -114,20 +114,65 @@ public:
 	}
 };
 
-void test_struct(void)
+bool test_struct(void)
 {
 	vec2f vec1(1,2);
 
 	cout<<vec1<<endl;
+
+	quad_curve tcurve;
+
+	try{
+		// out to fail
+		tcurve.getPoint(0,0.5f);
+		cout<<"empty FAIL"<<endl;
+		return false;
+	}
+	catch(...)
+	{ cout<<"empty OK"<<endl;}
+	
+	tcurve.addStartPoint(vec2f(0.0f,0.0f));
+
+	try{
+		tcurve.addSegment(vec2f(1.0f,0.0f),vec2f(0.7f,1.0f));
+
+		for(float q=0;q<1.0f;q+=0.1f)
+		{
+			cout<<tcurve.getPoint(0,q)<<endl;
+		}
+
+		cout<<"access test LOOKS_LIKE_OK :)"<<endl;
+	}
+	catch(string const &msg)
+	{
+		cout<<msg<<endl;
+		throw 0;
+	}
+	catch(out_of_range const &oor)
+	{
+		cout<<oor.what()<<endl;
+		throw 0;
+	}
+	catch(...)
+	{
+		cout<<"access test FAIL"<<endl;
+		return false;
+	}
+
+	return true;
+	
 }
 
 int main(int argc,char **argv)
 {
 	try
 	{
-		test_struct();
+		if(test_struct())
+			cout<<"Tests PASSED"<<endl;
+		else
+			cout<<"Tests FAILED"<<endl;
 	}
-	catch(string &msg)
+	catch(string const &msg)
 	{
 		cout<<msg<<endl;
 	}
