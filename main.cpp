@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <string>
+
 
 using namespace std;
 
@@ -50,6 +53,37 @@ struct vec2f
 	}
 };
 
+class quad_curve
+{
+protected:
+	vector<vec2f> base_points;
+	vector<vec2f> correction_points;
+
+public:
+	vec2f getPoint(size_t segment,float t)
+	{
+	}
+
+	void addStartPoint(vec2f pt)
+	{
+		if(base_points.empty())
+			base_points.push_back(pt);
+		else
+			throw string("curve already contains start point");
+	}
+
+	void addSegment(vec2f base_pt,vec2f correction_pt)
+	{
+		if(!base_points.empty())
+		{
+			base_points.push_back(base_pt);
+			correction_points.push_back(correction_pt);
+		}
+		else
+			throw string("first you need to add start point");
+	}
+};
+
 void test_struct(void)
 {
 	vec2f vec1(1,2);
@@ -59,6 +93,14 @@ void test_struct(void)
 
 int main(int argc,char **argv)
 {
-	test_struct();
+	try
+	{
+		test_struct();
+	}
+	catch(string &msg)
+	{
+		cout<<msg<<endl;
+	}
+
 	return 0;
 }
