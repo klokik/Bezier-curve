@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdexcept>
+#include <cmath>
 
 
 using namespace std;
@@ -60,8 +62,36 @@ protected:
 	vector<vec2f> correction_points;
 
 public:
-	vec2f getPoint(size_t segment,float t)
+	// look wikipedia's article for description
+	vec2f getPoint(size_t segment_num,float t)
 	{
+		//number of segments is equal to num. of correction points (one point per segment)
+		if(correction_points.size()>=segment_num)
+		{
+			// pivot points
+			vec2f P[] = {
+				base_points[segment_num],
+				correction_points[segment_num],
+				base_points[segment_num+1]
+			};
+
+			// Bernstain's polynomials
+			float b[] = {
+				pow(1-t,2),
+				2*t*(1-t),
+				pow(t,2)
+			};
+
+			vec2f sum;
+			size_t cnt = 3;
+
+			for(size_t i=0;i<cnt;++i)
+				sum = sum + b[i]*P[i];
+
+			return sum;
+		}
+		else
+			throw out_of_range("not enought point to calculate provided segment_num");
 	}
 
 	void addStartPoint(vec2f pt)
@@ -100,6 +130,10 @@ int main(int argc,char **argv)
 	catch(string &msg)
 	{
 		cout<<msg<<endl;
+	}
+	catch(out_of_range const &oor)
+	{
+		cout<<oor.what()<<endl;
 	}
 
 	return 0;
