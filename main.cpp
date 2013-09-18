@@ -77,9 +77,9 @@ public:
 
 			// Bernstain's polynomials
 			float b[] = {
-				pow(1-t,2),
+				std::pow(1-t,2.0f),
 				2*t*(1-t),
-				pow(t,2)
+				std::pow(t,2.0f)
 			};
 
 			vec2f sum;
